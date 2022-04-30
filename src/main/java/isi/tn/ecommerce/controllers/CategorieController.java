@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,13 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import isi.tn.ecommerce.entities.Article;
 import isi.tn.ecommerce.entities.Categorie;
-import isi.tn.ecommerce.entities.User;
-import isi.tn.ecommerce.services.ArticleService;
+import isi.tn.ecommerce.response.MessageResponse;
 import isi.tn.ecommerce.services.CategorieService;
-import isi.tn.ecommerce.services.UserService;
-
 
 @RestController
 @CrossOrigin(origins = "*") // api sera consommée par Angular
@@ -31,47 +28,47 @@ import isi.tn.ecommerce.services.UserService;
 public class CategorieController {
 	@Autowired
 	CategorieService cserv;
-	
-	
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/addcat")
-	public Categorie createCat(@Validated @RequestBody Categorie cat) {
+	public MessageResponse createCat(@Validated @RequestBody Categorie cat) {
 		return cserv.saveCat(cat);
 	}
 
 	@GetMapping("/cat/{id}")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
 	public Optional<Categorie> getCatById(@PathVariable(value = "id") Long Id) {
 		return cserv.findById(Id);
 		// .orElseThrow(() -> new ResourceNotFoundException("User", "id", Id));
 	}
 
 	@GetMapping("/categories")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
 	public List<Categorie> getAllCategories() {
 		List<Categorie> pro = cserv.findAllCategories();
 		return pro;
 
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/cat/{id}")
-	public ResponseEntity<?> deleteCat(@PathVariable(value = "id") Long catId) {
-		Categorie cat = cserv.findById(catId).orElseThrow(null);
-		// .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+	public MessageResponse deleteCat(@PathVariable(value = "id") Long catId) {
 
-		// userRepository.deleteById(userId);
-		cserv.delete(cat);
+		return cserv.delete(catId);
 
-		return ResponseEntity.ok().build();
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/cat/{id}")
-	public Categorie updateCategorie(@PathVariable(value = "id") Long Id, @Validated @RequestBody Categorie catDetails) {
+	public MessageResponse updateCategorie(@PathVariable(value = "id") Long Id,
+			@Validated @RequestBody Categorie catDetails) {
 
 		Categorie cat = cserv.findById(Id).orElseThrow(null);
 
 		cat.setLibelle(catDetails.getLibelle());
-		
-		Categorie updatedCategorie = cserv.saveCat(cat);
+
+		MessageResponse updatedCategorie = cserv.saveCat(cat);
 		return updatedCategorie;
 	}
-	
-	
+
 }

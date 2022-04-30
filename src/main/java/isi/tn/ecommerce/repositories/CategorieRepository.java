@@ -9,9 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import isi.tn.ecommerce.entities.Categorie;
 
-
-
 @Repository
 public interface CategorieRepository extends JpaRepository<Categorie, Long> {
+	Boolean existsByLibelle(String libelle);
 
 }

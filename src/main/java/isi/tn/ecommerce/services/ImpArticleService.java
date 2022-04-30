@@ -5,19 +5,27 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import isi.tn.ecommerce.entities.Article;
 import isi.tn.ecommerce.repositories.ArticleRepository;
+import isi.tn.ecommerce.response.MessageResponse;
 
 @Service
 public class ImpArticleService implements ArticleService {
 	@Autowired
 	ArticleRepository arepos;
 
+	@Transactional
 	@Override
-	public Article saveArt(Article article) {
+	public MessageResponse saveArt(Article article) {
 		// TODO Auto-generated method stub
-		return arepos.save(article);
+		boolean existe = arepos.existsByRef(article.getRef());
+		if (existe) {
+			return new MessageResponse("Echec la reférence existe deja 🛑");
+		}
+		arepos.save(article);
+		return new MessageResponse("Article ajouté avec succés ✔");
 	}
 
 	@Override
@@ -33,8 +41,13 @@ public class ImpArticleService implements ArticleService {
 	}
 
 	@Override
-	public void delete(Article article) {
-		// TODO Auto-generated method stub
-		arepos.delete(article);
+	public MessageResponse delete(Long  id) {
+		try {
+			arepos.deleteById(id);
+			return new MessageResponse("Action réalisée avec succés ✔");
+		} catch (Exception e) {
+			// TODO: handle exception
+			return new MessageResponse("Echec 💥🛑❌");
+		}
 	}
 }

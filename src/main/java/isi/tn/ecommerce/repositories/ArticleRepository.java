@@ -8,5 +8,7 @@ import isi.tn.ecommerce.entities.Article;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
+	Boolean existsByRef(String ref);
+
 
 }

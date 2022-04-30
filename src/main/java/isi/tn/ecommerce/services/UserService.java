@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import isi.tn.ecommerce.entities.User;
+import isi.tn.ecommerce.response.MessageResponse;
 
 public interface UserService {
 	User saveUser(User user);
@@ -13,6 +14,6 @@ public interface UserService {
 
 	List<User> findAllUsers();
 
-	void delete(User user);
+	MessageResponse delete(Long id);
 
 }

@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import isi.tn.ecommerce.entities.Article;
+import isi.tn.ecommerce.response.MessageResponse;
 
 public interface ArticleService {
-	Article saveArt(Article article);
+	MessageResponse saveArt(Article article);
 
 	Optional<Article> findById(Long id);
 
 	List<Article> findAllArticles();
 
-	void delete(Article article);
+	MessageResponse delete(Long id);
 }

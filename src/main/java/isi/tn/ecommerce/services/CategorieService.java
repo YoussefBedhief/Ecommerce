@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import isi.tn.ecommerce.entities.Categorie;
+import isi.tn.ecommerce.response.MessageResponse;
 
 public interface CategorieService {
-	Categorie saveCat(Categorie categorie);
+	MessageResponse saveCat(Categorie categorie);
 
 	Optional<Categorie> findById(Long id);
 
 	List<Categorie> findAllCategories();
 
-	void delete(Categorie categorie);
+	MessageResponse delete(Long id);
 }

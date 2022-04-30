@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import isi.tn.ecommerce.entities.User;
 import isi.tn.ecommerce.repositories.UserRepository;
+import isi.tn.ecommerce.response.MessageResponse;
 
 @Service
 public class ImpUserService implements UserService{
@@ -34,8 +35,13 @@ public class ImpUserService implements UserService{
 	}
 
 	@Override
-	public void delete(User user) {
-		// TODO Auto-generated method stub
-		urepos.delete(user);
+	public MessageResponse delete(Long  id) {
+		try {
+			urepos.deleteById(id);
+			return new MessageResponse("Action réalisée avec succés ✔");
+		} catch (Exception e) {
+			// TODO: handle exception
+			return new MessageResponse("Echec 💥🛑❌");
+		}
 	}
 }

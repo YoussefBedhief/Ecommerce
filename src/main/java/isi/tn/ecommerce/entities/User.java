@@ -1,66 +1,66 @@
 package isi.tn.ecommerce.entities;
 
-import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
-public class User implements Serializable {
-	private static final long serialVersionUID = 1L;
-	@Id // clé primaire
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // ça sera généré automatiquement
-	@Column(name = "userId") // esm lcolonne user_id
-	private Long userId;
-	private String email;
-	private String pwd;
-	private String fname;
-	private String lname;
-	@ManyToMany(mappedBy = "user", fetch = FetchType.LAZY)
-	private Set<Article> article = new HashSet<>();
+@Table(	name = "users", 
+		uniqueConstraints = { 
+			@UniqueConstraint(columnNames = "username"),
+			@UniqueConstraint(columnNames = "email") 
+		})
+public class User {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-	//
+	@NotBlank
+	@Size(max = 20)
+	private String username;
+
+	@NotBlank
+	@Size(max = 50)
+	@Email
+	private String email;
+
+	@NotBlank
+	@Size(max = 120)
+	private String password;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(	name = "user_roles", 
+				joinColumns = @JoinColumn(name = "user_id"), 
+				inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>();
 
 	public User() {
-		super();
 	}
 
-	public User(Long id, String email, String pwd, String fname, String lname) {
-		super();
-		this.userId = id;
+	public User(String username, String email, String password) {
+		this.username = username;
 		this.email = email;
-		this.pwd = pwd;
-		this.fname = fname;
-		this.lname = lname;
+		this.password = password;
 	}
 
-	public Set<Article> getArticle() {
-		return article;
+	public Long getId() {
+		return id;
 	}
 
-	public void setArticle(Set<Article> articles) {
-		this.article = articles;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public void setUserId(Long id) {
-		this.userId = id;
+	public String getUsername() {
+		return username;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getEmail() {
@@ -71,28 +71,20 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	public String getPwd() {
-		return pwd;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
-	public String getFname() {
-		return fname;
+	public Set<Role> getRoles() {
+		return roles;
 	}
 
-	public void setFname(String fname) {
-		this.fname = fname;
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
 	}
-
-	public String getLname() {
-		return lname;
-	}
-
-	public void setLname(String lname) {
-		this.lname = lname;
-	}
-
 }
+
